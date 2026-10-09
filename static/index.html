@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APEX MARKETING AI // Agency & Owner HQ</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+            dark: {
+              bg: '#0B0F19',
+              card: '#111827',
+              border: '#1F2937',
+              hover: '#1E293B',
+              input: '#0F172A'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Marked.js for Markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="bg-[#0B0F19] text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- Main Container -->
+  <div class="flex h-screen overflow-hidden">
+
+    <!-- Backdrop for mobile sidebar -->
+    <div id="sidebar-backdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-black/60 z-20 hidden md:hidden"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="app-sidebar" class="fixed md:static inset-y-0 left-0 -translate-x-full md:translate-x-0 w-72 bg-[#111827] border-r border-slate-800 flex flex-col z-30 transition-transform duration-300">
+      
+      <!-- Brand Logo & Header -->
+      <div class="p-5 border-b border-slate-800/80 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/25">
+            <i class="fa-solid fa-bolt text-white text-lg"></i>
+          </div>
+          <div>
+            <h1 class="font-bold text-base tracking-wide bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">APEX MARKETING</h1>
+            <p class="text-xs text-indigo-400 font-medium">Owner Command HQ</p>
+          </div>
+        </div>
+        <button onclick="toggleMobileSidebar()" class="md:hidden text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Navigation Modules List (Scrollable) -->
+      <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-6 scrollbar-thin">
+        
+        <!-- Primary Views -->
+        <div>
+          <p class="px-3 text-[11px] font-semibold tracking-wider text-slate-400 uppercase mb-2">Command Center</p>
+          <button onclick="switchView('dashboard'); closeMobileSidebar();" id="nav-btn-dashboard" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
+            <i class="fa-solid fa-chart-pie text-base w-5 text-center"></i>
+            <span>Overview (Kaam Ka Jaiza)</span>
+          </button>
+          <button onclick="switchView('vault'); closeMobileSidebar();" id="nav-btn-vault" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-all mt-1">
+            <i class="fa-solid fa-box-archive text-base w-5 text-center"></i>
+            <span>Work Vault / History</span>
+            <span id="badge-total-assets" class="ml-auto text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-mono">0</span>
+          </button>
+        </div>
+
+        <!-- Dynamic Module Categories Injected via JS -->
+        <div id="sidebar-categories" class="space-y-5">
+          <!-- Filled by app.js -->
+        </div>
+
+      </nav>
+
+      <!-- Sidebar Footer (Active Brand & Settings) -->
+      <div class="p-3 border-t border-slate-800/80 bg-[#0d131f]">
+        <div onclick="openBrandModal(); closeMobileSidebar();" class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-800/70 cursor-pointer transition-all border border-transparent hover:border-slate-700/60">
+          <div class="w-8 h-8 rounded-lg bg-indigo-950 border border-indigo-700/40 flex items-center justify-center text-indigo-400 font-bold text-xs">
+            <i class="fa-solid fa-building"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p id="sidebar-brand-name" class="text-xs font-semibold text-slate-200 truncate">Setup Your Project</p>
+            <p class="text-[10px] text-slate-400">Click to edit brand profile</p>
+          </div>
+          <i class="fa-solid fa-pen-to-square text-xs text-slate-400"></i>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- MAIN WORKSPACE -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#0B0F19]">
+      
+      <!-- Top Bar -->
+      <header class="h-16 border-b border-slate-800/80 bg-[#111827]/70 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between z-10">
+        <div class="flex items-center gap-3">
+          <button onclick="toggleMobileSidebar()" title="Toggle Menu" class="md:hidden w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700/80 flex items-center justify-center text-slate-300 text-sm transition-all">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div id="topbar-title-wrapper" class="flex items-center gap-2 truncate">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>
+            <span id="topbar-title" class="text-xs sm:text-sm font-semibold text-slate-200 truncate">Owner Dashboard // Live Overview</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <!-- Quick Brand Profile Pill -->
+          <button onclick="openBrandModal()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700/80 text-xs text-slate-300 transition-all">
+            <i class="fa-solid fa-sliders text-indigo-400"></i>
+            <span>Project: <strong id="header-brand-pill" class="text-indigo-300 font-medium">Setup Your Project</strong></span>
+          </button>
+
+          <!-- Quick Refresh Button -->
+          <button onclick="loadDashboardData()" title="Refresh Dashboard" class="w-8 h-8 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700/80 flex items-center justify-center text-slate-300 text-xs transition-all">
+            <i class="fa-solid fa-arrows-rotate"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Scrollable Main Container -->
+      <div id="content-viewport" class="flex-1 overflow-y-auto p-6 scrollbar-thin">
+
+        <!-- ============================================== -->
+        <!-- VIEW 1: EXECUTIVE DASHBOARD (HOME / KAAM JAIZA) -->
+        <!-- ============================================== -->
+        <div id="view-dashboard" class="space-y-6">
+          
+          <!-- Welcome Hero Banner -->
+          <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-950/70 via-slate-900 to-purple-950/50 border border-indigo-900/40 p-6 shadow-xl">
+            <div class="relative z-10 max-w-3xl">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 mb-3">
+                <i class="fa-solid fa-sparkles text-[10px]"></i> Client Marketing Hub
+              </span>
+              <h2 class="text-2xl font-bold text-white mb-2">Marketing Operations & Work History</h2>
+              <p class="text-sm text-slate-300 leading-relaxed">
+                Yahan par client ya business owner dekh sakta hai ke <strong>kaam kaisa hua hai</strong>: sabhi generated social posts, content calendars, ad campaigns, SEO reports aur strategies live record hoti hain. Kisi bhi module ko chala kar naya asset generate karein.
+              </p>
+            </div>
+            <!-- Glow background effect -->
+            <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+          </div>
+
+          <!-- 4 Stats Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <div class="bg-[#111827] border border-slate-800 p-4 rounded-xl flex items-center gap-4 hover:border-slate-700 transition-all">
+              <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-xl">
+                <i class="fa-solid fa-layer-group"></i>
+              </div>
+              <div>
+                <p class="text-xs text-slate-400 font-medium">Total Assets Generated</p>
+                <h3 id="stat-total" class="text-2xl font-bold text-white mt-0.5">0</h3>
+              </div>
+            </div>
+
+            <div class="bg-[#111827] border border-slate-800 p-4 rounded-xl flex items-center gap-4 hover:border-slate-700 transition-all">
+              <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-xl">
+                <i class="fa-solid fa-calendar-check"></i>
+              </div>
+              <div>
+                <p class="text-xs text-slate-400 font-medium">Output Created Today</p>
+                <h3 id="stat-today" class="text-2xl font-bold text-emerald-400 mt-0.5">0</h3>
+              </div>
+            </div>
+
+            <div class="bg-[#111827] border border-slate-800 p-4 rounded-xl flex items-center gap-4 hover:border-slate-700 transition-all">
+              <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-xl">
+                <i class="fa-solid fa-star"></i>
+              </div>
+              <div>
+                <p class="text-xs text-slate-400 font-medium">Starred / Favorites</p>
+                <h3 id="stat-favs" class="text-2xl font-bold text-amber-400 mt-0.5">0</h3>
+              </div>
+            </div>
+
+            <div class="bg-[#111827] border border-slate-800 p-4 rounded-xl flex items-center gap-4 hover:border-slate-700 transition-all">
+              <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 text-xl">
+                <i class="fa-solid fa-crown"></i>
+              </div>
+              <div>
+                <p class="text-xs text-slate-400 font-medium">Top Category</p>
+                <h3 id="stat-top" class="text-lg font-bold text-slate-200 mt-0.5 truncate max-w-[140px]">Social</h3>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Quick Launch Modules Grid -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles text-indigo-400"></i>
+                <span>Quick Launch Marketing Agents</span>
+              </h3>
+              <span class="text-xs text-slate-400">15 AI tools ready</span>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" id="quick-launch-grid">
+              <!-- Injected by app.js with top popular modules -->
+            </div>
+          </div>
+
+          <!-- Recent Work Feed ("Kaam Kaisa Hua Hai") -->
+          <div class="bg-[#111827] border border-slate-800 rounded-xl overflow-hidden shadow-lg">
+            <div class="p-4 border-b border-slate-800/80 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left text-indigo-400"></i>
+                <h3 class="text-sm font-bold text-white">Recent Work Done (Live Feed)</h3>
+              </div>
+              <button onclick="switchView('vault')" class="text-xs text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-1">
+                <span>View Full Vault</span>
+                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </button>
+            </div>
+
+            <!-- List of items -->
+            <div id="recent-work-list" class="divide-y divide-slate-800/60">
+              <!-- Injected by app.js -->
+              <div class="p-8 text-center text-slate-400">
+                <i class="fa-solid fa-spinner fa-spin text-2xl mb-2 text-indigo-500"></i>
+                <p class="text-sm">Loading recent marketing assets...</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ============================================== -->
+        <!-- VIEW 2: MODULE GENERATOR WORKSPACE             -->
+        <!-- ============================================== -->
+        <div id="view-generator" class="hidden space-y-6">
+          
+          <!-- Generator Header -->
+          <div class="bg-[#111827] border border-slate-800 p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-start gap-4">
+              <div id="gen-module-icon" class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-2xl flex-shrink-0">
+                <i class="fa-solid fa-hashtag"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <h2 id="gen-module-name" class="text-xl font-bold text-white">Social Media Content</h2>
+                  <span id="gen-module-badge" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">Viral</span>
+                </div>
+                <p id="gen-module-desc" class="text-xs text-slate-400 max-w-2xl">Generate high-converting social media captions, hooks, and hashtags.</p>
+              </div>
+            </div>
+            
+            <div class="flex items-center gap-2">
+              <button onclick="switchView('dashboard')" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition-all flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Back to Dashboard</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2 Columns: Input Form (Left) & Output / Preview (Right) -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- Left: Dynamic Form Controls (5 cols) -->
+            <div class="lg:col-span-5 bg-[#111827] border border-slate-800 p-5 rounded-2xl shadow-lg space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                  <i class="fa-solid fa-sliders text-indigo-400"></i>
+                  <span>Input Parameters</span>
+                </h4>
+                <button type="button" onclick="resetForm()" class="text-slate-400 hover:text-slate-300 text-xs">Clear</button>
+              </div>
+
+              <form id="generator-form" onsubmit="handleGenerate(event)" class="space-y-4">
+                <!-- Dynamic form fields injected here -->
+                <div id="dynamic-form-fields" class="space-y-3.5"></div>
+
+                <!-- Submit Button -->
+                <div class="pt-2">
+                  <button type="submit" id="btn-generate" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 transition-all duration-200">
+                    <i class="fa-solid fa-sparkles"></i>
+                    <span id="btn-generate-text">Generate with Gemini AI</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Right: Output Preview Panel (7 cols) -->
+            <div class="lg:col-span-7 bg-[#111827] border border-slate-800 rounded-2xl shadow-lg flex flex-col min-h-[500px]">
+              
+              <!-- Output Header Toolbar -->
+              <div class="p-4 border-b border-slate-800 flex items-center justify-between flex-wrap gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-slate-500" id="output-status-indicator"></span>
+                  <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">AI Deliverable Preview</h4>
+                </div>
+
+                <div id="output-actions" class="hidden flex items-center gap-1.5 flex-wrap">
+                  <button onclick="shareOutputWhatsApp()" title="Share to WhatsApp" class="px-2.5 py-1.5 rounded-lg bg-emerald-950/80 hover:bg-emerald-800 text-xs text-emerald-300 transition-all flex items-center gap-1.5 border border-emerald-700/80">
+                    <i class="fa-brands fa-whatsapp text-emerald-400"></i>
+                    <span>WhatsApp</span>
+                  </button>
+
+                  <button onclick="copyCurrentOutput()" title="Copy to Clipboard" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 transition-all flex items-center gap-1.5 border border-slate-700">
+                    <i class="fa-regular fa-copy"></i>
+                    <span id="copy-btn-label">Copy</span>
+                  </button>
+
+                  <button onclick="printCurrentOutput()" title="Print / Save PDF" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 transition-all flex items-center gap-1.5 border border-slate-700">
+                    <i class="fa-solid fa-print"></i>
+                    <span>PDF</span>
+                  </button>
+
+                  <button onclick="exportCurrentOutput('markdown')" title="Export as Markdown" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 transition-all flex items-center gap-1.5 border border-slate-700">
+                    <i class="fa-brands fa-markdown"></i>
+                    <span>.MD</span>
+                  </button>
+
+                  <button onclick="exportCurrentOutput('csv')" title="Export as CSV Table" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 transition-all flex items-center gap-1.5 border border-slate-700">
+                    <i class="fa-solid fa-file-csv"></i>
+                    <span>.CSV</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Output Body (Scrollable) -->
+              <div class="p-6 flex-1 overflow-y-auto max-h-[650px] relative">
+                
+                <!-- Placeholder state before generation -->
+                <div id="output-placeholder" class="py-20 text-center text-slate-400 space-y-3">
+                  <div class="w-16 h-16 rounded-2xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-center text-slate-500 text-2xl mx-auto">
+                    <i class="fa-solid fa-wand-magic"></i>
+                  </div>
+                  <h5 class="text-sm font-semibold text-slate-300">Ready to Create</h5>
+                  <p class="text-xs text-slate-400 max-w-sm mx-auto">Fill in the parameters on the left and click "Generate with Gemini AI". Complete, ready-to-deploy deliverables will appear here.</p>
+                </div>
+
+                <!-- Loading State during generation -->
+                <div id="output-loading" class="hidden py-24 text-center space-y-4">
+                  <div class="relative w-16 h-16 mx-auto">
+                    <div class="w-16 h-16 rounded-full border-4 border-indigo-500/20 border-t-indigo-500 animate-spin"></div>
+                    <div class="absolute inset-0 flex items-center justify-center text-indigo-400 text-lg">
+                      <i class="fa-solid fa-brain"></i>
+                    </div>
+                  </div>
+                  <div>
+                    <h5 id="loading-status-text" class="text-sm font-bold text-white">Synthesizing High-Conversion Asset...</h5>
+                    <p class="text-xs text-slate-400 mt-1">Applying brand context, emotional triggers, and formatting.</p>
+                  </div>
+                </div>
+
+                <!-- Formatted Rendered Output -->
+                <div id="output-rendered" class="hidden prose prose-invert prose-indigo max-w-none text-slate-200 text-sm leading-relaxed">
+                  <!-- Rendered markdown inserted here -->
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ============================================== -->
+        <!-- VIEW 3: WORK HISTORY VAULT                     -->
+        <!-- ============================================== -->
+        <div id="view-vault" class="hidden space-y-6">
+          
+          <div class="bg-[#111827] border border-slate-800 p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-box-archive text-indigo-400"></i>
+                <span>Marketing Deliverables Vault</span>
+              </h2>
+              <p class="text-xs text-slate-400 mt-1">All past work done for this client is archived here. Search, preview, or export anytime.</p>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex items-center gap-3 flex-wrap">
+              <!-- Search Input -->
+              <div class="relative">
+                <i class="fa-solid fa-magnifying-glass text-slate-400 text-xs absolute left-3 top-3"></i>
+                <input type="text" id="vault-search-input" oninput="debounceVaultSearch()" placeholder="Search assets..." class="bg-slate-900 border border-slate-700/80 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+              </div>
+
+              <!-- Module filter -->
+              <select id="vault-module-filter" onchange="loadVaultData()" class="bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                <option value="all">All Modules</option>
+              </select>
+
+              <!-- Starred Only Toggle -->
+              <button onclick="toggleVaultFavorites()" id="btn-vault-favs" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-xs text-slate-300 flex items-center gap-1.5 transition-all">
+                <i class="fa-solid fa-star text-amber-400"></i>
+                <span>Starred</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Vault Table / Grid -->
+          <div class="bg-[#111827] border border-slate-800 rounded-2xl overflow-hidden shadow-lg">
+            <div id="vault-list" class="divide-y divide-slate-800/60">
+              <!-- Injected by app.js -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: BRAND PROFILE CONFIGURATION             -->
+  <!-- ============================================== -->
+  <div id="brand-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#111827] border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+            <i class="fa-solid fa-building"></i>
+          </div>
+          <h3 class="text-base font-bold text-white">Client / Brand Profile</h3>
+        </div>
+        <button onclick="closeBrandModal()" class="text-slate-400 hover:text-white text-sm">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-400">
+        Ye details har AI agent ke system context mein automatically feed hoti hain taake har deliverable aapke specific project ke mutabiq bane.
+      </p>
+
+      <!-- 1-Click Industry Presets -->
+      <div>
+        <label class="block text-[11px] font-bold text-indigo-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+          <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
+          <span>1-Click Project Presets (Quick Select)</span>
+        </label>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+          <button type="button" onclick="applyBrandPreset('ecommerce')" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[11px] text-slate-300 text-left flex items-center gap-1.5 transition-all">
+            <span>🛍️</span> <span class="truncate">E-Commerce & Brands</span>
+          </button>
+          <button type="button" onclick="applyBrandPreset('realestate')" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[11px] text-slate-300 text-left flex items-center gap-1.5 transition-all">
+            <span>🏢</span> <span class="truncate">Real Estate & Property</span>
+          </button>
+          <button type="button" onclick="applyBrandPreset('agency')" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[11px] text-slate-300 text-left flex items-center gap-1.5 transition-all">
+            <span>💻</span> <span class="truncate">Digital Agency / IT</span>
+          </button>
+          <button type="button" onclick="applyBrandPreset('education')" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[11px] text-slate-300 text-left flex items-center gap-1.5 transition-all">
+            <span>🎓</span> <span class="truncate">Institute & Coaching</span>
+          </button>
+          <button type="button" onclick="applyBrandPreset('restaurant')" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[11px] text-slate-300 text-left flex items-center gap-1.5 transition-all">
+            <span>🍔</span> <span class="truncate">Food & Restaurant</span>
+          </button>
+          <button type="button" onclick="applyBrandPreset('fitness')" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[11px] text-slate-300 text-left flex items-center gap-1.5 transition-all">
+            <span>🏋️</span> <span class="truncate">Gym & Health Fitness</span>
+          </button>
+        </div>
+      </div>
+
+      <form id="brand-profile-form" onsubmit="handleSaveBrand(event)" class="space-y-3 pt-1">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Company / Brand / Project Name *</label>
+          <input type="text" id="bm-name" required class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Industry / Niche *</label>
+          <input type="text" id="bm-industry" placeholder="e.g., Luxury Real Estate, E-Commerce Footwear, B2B SaaS" required class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Target Audience / Ideal Customer Profile</label>
+          <input type="text" id="bm-audience" placeholder="e.g., High-net-worth investors, Busy young moms, Tech startups" class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Brand Voice & Tone</label>
+          <input type="text" id="bm-tone" placeholder="e.g., Authoritative, bold, energetic, high-converting" class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Unique Selling Proposition (USP)</label>
+          <textarea id="bm-usp" rows="2" placeholder="e.g., Guaranteed 30-day turnaround, 100% organic ingredients, proprietary AI algorithm" class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Website URL (Optional)</label>
+          <input type="url" id="bm-website" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <div class="pt-3 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeBrandModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300">Cancel</button>
+          <button type="submit" class="px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold text-white shadow-lg shadow-indigo-600/30">Save Profile</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: VIEW ASSET DETAILS / FULL PREVIEW       -->
+  <!-- ============================================== -->
+  <div id="detail-modal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#111827] border border-slate-800 rounded-2xl max-w-4xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+      
+      <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/50">
+        <div class="flex items-center gap-2">
+          <span id="dm-category-badge" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">Category</span>
+          <h3 id="dm-title" class="text-sm font-bold text-white truncate max-w-md">Asset Title</h3>
+        </div>
+        
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <button onclick="shareModalWhatsApp()" title="Share to WhatsApp" class="px-2.5 py-1.5 rounded-lg bg-emerald-950/80 hover:bg-emerald-800 text-xs text-emerald-300 transition-all flex items-center gap-1.5 border border-emerald-700/80">
+            <i class="fa-brands fa-whatsapp text-emerald-400"></i>
+            <span>WhatsApp</span>
+          </button>
+          <button onclick="copyModalOutput()" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 flex items-center gap-1.5 border border-slate-700">
+            <i class="fa-regular fa-copy"></i>
+            <span id="dm-copy-btn">Copy</span>
+          </button>
+          <button onclick="printModalOutput()" title="Print / PDF" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 flex items-center gap-1 border border-slate-700">
+            <i class="fa-solid fa-print"></i>
+            <span>PDF</span>
+          </button>
+          <button onclick="exportModalOutput('markdown')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 flex items-center gap-1 border border-slate-700">
+            <i class="fa-brands fa-markdown"></i>
+            <span>Export</span>
+          </button>
+          <button onclick="closeDetailModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-sm ml-1">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="p-6 overflow-y-auto flex-1 prose prose-invert prose-indigo max-w-none text-slate-200 text-sm leading-relaxed" id="dm-content">
+        <!-- Rendered markdown -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
+  <!-- App Script -->
+  <script src="/static/app.js"></script>
+</body>
+</html>

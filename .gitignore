@@ -1,0 +1,17 @@
+﻿# Secrets & Environment
+.env
+
+# Large Binaries
+cloudflared.exe
+*.exe
+
+# Python Cache & Logs
+__pycache__/
+*.pyc
+*.log
+
+# IDE & OS
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini

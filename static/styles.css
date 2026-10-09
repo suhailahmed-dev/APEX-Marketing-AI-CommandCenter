@@ -1,0 +1,159 @@
+/* Custom CSS for Apex Marketing AI */
+
+/* Modern Scrollbars */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(75, 85, 99, 0.4);
+  border-radius: 9999px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.5);
+}
+
+/* Markdown Prose Enhancements */
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  color: #f8fafc;
+  font-weight: 700;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose h1 { font-size: 1.5rem; border-bottom: 1px solid #1e293b; padding-bottom: 0.5rem; }
+.prose h2 { font-size: 1.25rem; color: #818cf8; }
+.prose h3 { font-size: 1.1rem; color: #cbd5e1; }
+
+.prose p {
+  margin-bottom: 0.85rem;
+  line-height: 1.7;
+}
+
+.prose ul, .prose ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0.85rem;
+  padding-left: 1.5rem;
+}
+
+.prose li {
+  margin-bottom: 0.35rem;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 1.25rem 0;
+  border-radius: 0.5rem;
+}
+
+.prose table {
+  width: 100%;
+  min-width: 500px;
+  border-collapse: collapse;
+  font-size: 0.825rem;
+  overflow: hidden;
+}
+
+.prose th, .prose td {
+  border: 1px solid #1f2937;
+  padding: 0.65rem 0.85rem;
+  text-align: left;
+}
+
+.prose th {
+  background-color: #1e1b4b;
+  color: #c7d2fe;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.prose tr:nth-child(even) {
+  background-color: rgba(17, 24, 39, 0.6);
+}
+
+.prose tr:hover {
+  background-color: rgba(30, 41, 59, 0.5);
+}
+
+.prose blockquote {
+  border-left: 4px solid #6366f1;
+  background: rgba(99, 102, 241, 0.08);
+  padding: 0.6rem 1rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  font-style: italic;
+  color: #cbd5e1;
+  margin: 1rem 0;
+}
+
+.prose code {
+  background: #1e293b;
+  color: #a5b4fc;
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.85em;
+}
+
+.prose pre {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.prose strong {
+  color: #f1f5f9;
+  font-weight: 600;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+/* Print CSS */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  aside, header, #sidebar-backdrop, .nav-item, button, #toast-container, form {
+    display: none !important;
+  }
+  #view-dashboard, #view-vault {
+    display: none !important;
+  }
+  #view-generator, #content-viewport, #output-rendered, .prose {
+    display: block !important;
+    width: 100% !important;
+    color: #000000 !important;
+  }
+  .prose * {
+    color: #000000 !important;
+  }
+  .prose th {
+    background: #f1f5f9 !important;
+    color: #000000 !important;
+  }
+  .prose blockquote {
+    border-left: 4px solid #333333 !important;
+    background: #f8fafc !important;
+  }
+}
